@@ -1,0 +1,5 @@
+{
+  "watch": ["server/"],
+  "ext": "js,json",
+  "ignore": ["*.db", "*.db-wal", "*.db-shm", "database/", "public/", "TestSyncManager/"]
+}

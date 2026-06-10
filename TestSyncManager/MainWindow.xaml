@@ -1,0 +1,492 @@
+<Window x:Class="TestSyncManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TestSyncManager.ViewModels"
+        Title="Менеджер синхронизации тестов" 
+        Height="750" Width="900"
+        MinHeight="650" MinWidth="800"
+        Background="{StaticResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        
+        <Border Grid.Row="0" Background="White" Padding="24,16" 
+                BorderThickness="0,0,0,1" BorderBrush="{StaticResource BorderBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel>
+                    <TextBlock Text="📚 Менеджер тестовой платформы" 
+                               FontSize="24" FontWeight="Bold" 
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <TextBlock Text="{Binding TeacherName}" 
+                               FontSize="14" 
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+                
+                
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="Режим работы:" FontSize="12" 
+                               Foreground="{StaticResource TextSecondaryBrush}" 
+                               Margin="0,0,0,6" HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="OfflineMode" 
+                                     IsChecked="{Binding IsOfflineMode}"
+                                     GroupName="Mode" Margin="0,0,8,0">
+                            <RadioButton.Template>
+                                <ControlTemplate TargetType="RadioButton">
+                                    <Border x:Name="border" 
+                                            Background="#F0F0F0" 
+                                            CornerRadius="8" 
+                                            Padding="16,10"
+                                            Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="💻" FontSize="16" Margin="0,0,8,0"/>
+                                            <TextBlock x:Name="txt" Text="Оффлайн" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                            <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </RadioButton.Template>
+                        </RadioButton>
+                        
+                        <RadioButton x:Name="OnlineMode" 
+                                     IsChecked="{Binding IsOnlineMode}"
+                                     GroupName="Mode">
+                            <RadioButton.Template>
+                                <ControlTemplate TargetType="RadioButton">
+                                    <Border x:Name="border" 
+                                            Background="#F0F0F0" 
+                                            CornerRadius="8" 
+                                            Padding="16,10"
+                                            Cursor="Hand">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🌐" FontSize="16" Margin="0,0,8,0"/>
+                                            <TextBlock x:Name="txt" Text="Онлайн" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="border" Property="Background" Value="{StaticResource SuccessBrush}"/>
+                                            <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </RadioButton.Template>
+                        </RadioButton>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24">
+            <StackPanel>
+                
+                
+                <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock FontSize="14" TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="🌐 ОНЛАЙН РЕЖИМ: Синхронизация локальной базы данных с удалённым сервером. Используйте для обмена данными между компьютерами."/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsOfflineMode}" Value="True">
+                                            <Setter Property="Text" Value="💻 ОФФЛАЙН РЕЖИМ: Запуск локального сервера для работы без интернета. Студенты подключаются к вашему компьютеру по локальной сети."/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                
+                
+                <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="🗄️ Локальная база данных" FontSize="18" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
+                        
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox Text="{Binding LocalDatabasePath, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True"
+                                     VerticalAlignment="Center"/>
+                            
+                            <Button Grid.Column="1" Content="Выбрать" 
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding BrowseLocalDatabaseCommand}"
+                                    Margin="8,0,0,0"/>
+                            
+                            <Button Grid.Column="2" Content="Создать новую" 
+                                    Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding CreateLocalDatabaseCommand}"
+                                    Margin="8,0,0,0"/>
+                            
+                            <Button Grid.Column="3" Content="🔄" ToolTip="Пересоздать БД (удалить и создать заново)"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding RecreateDatabaseCommand}"
+                                    Margin="8,0,0,0"
+                                    Padding="12,12"
+                                    Visibility="{Binding HasLocalDatabase, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </Grid>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Статус: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="❌ Не выбрана"/>
+                                        <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding HasLocalDatabase}" Value="True">
+                                                <Setter Property="Text" Value="✅ Подключена"/>
+                                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                
+                <Border Style="{StaticResource Card}" Margin="0,0,0,16"
+                        Visibility="{Binding IsOfflineMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock Text="🖥️ Локальный сервер" FontSize="18" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
+                        
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Text="Путь к сайту:" VerticalAlignment="Center" 
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,12,0"/>
+                            
+                            <TextBox Grid.Column="1" 
+                                     Text="{Binding WebsitePath, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True"/>
+                            
+                            <Button Grid.Column="2" Content="Выбрать" 
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding BrowseWebsitePathCommand}"
+                                    Margin="8,0,0,0"/>
+                        </Grid>
+                        
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Text="Порт:" VerticalAlignment="Center" 
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,12,0"/>
+                            
+                            <TextBox Grid.Column="1" 
+                                     Text="{Binding LocalServerPort, UpdateSourceTrigger=PropertyChanged}" 
+                                     Style="{StaticResource ModernTextBox}"/>
+                        </Grid>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                            <TextBlock Text="Статус: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Text="{Binding ServerStatus.StatusText}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ServerStatus.IsRunning}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="▶ Запустить сервер" 
+                                    Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding StartServerCommand}"
+                                    Visibility="{Binding ServerStatus.IsRunning, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                            
+                            <Button Content="⏹ Остановить" 
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding StopServerCommand}"
+                                    Visibility="{Binding ServerStatus.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            
+                            <Button Content="🌐 Открыть в браузере" 
+                                    Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding OpenInBrowserCommand}"
+                                    Margin="8,0,0,0"
+                                    IsEnabled="{Binding ServerStatus.IsRunning}"/>
+                        </StackPanel>
+                        
+                        
+                        <Border Background="#FFF3E0" CornerRadius="8" Padding="12" Margin="0,16,0,0"
+                                Visibility="{Binding ServerStatus.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="📱 Адрес для студентов:" FontWeight="SemiBold" Foreground="#E65100"/>
+                                <TextBlock Text="{Binding LocalServerAddress}" FontSize="16" FontWeight="Bold" 
+                                           Foreground="#E65100" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                
+                
+                <StackPanel Visibility="{Binding IsOnlineMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                    
+                    
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="🌐 Удалённый сервер" FontSize="18" FontWeight="SemiBold" 
+                                       Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
+                            
+                            <TextBlock Text="URL сервера, с которым будет синхронизироваться локальная БД:" 
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                            
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBox Text="{Binding OnlineServerUrl, UpdateSourceTrigger=PropertyChanged}" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         ToolTip="Например: http://192.168.1.100:3000 или https://mysite.com"/>
+                                
+                                <Button Grid.Column="1" Content="Проверить" 
+                                        Style="{StaticResource SecondaryButton}"
+                                        Command="{Binding TestOnlineConnectionCommand}"
+                                        Margin="8,0,0,0"/>
+                            </Grid>
+                            
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="API ключ:" VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,12,0"/>
+                                
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding OnlineApiKey, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource ModernTextBox}"
+                                         ToolTip="ADMIN_API_KEY с удалённого сервера (из переменной окружения)"/>
+                            </Grid>
+                            
+                            <TextBlock Text="💡 Это может быть IP другого компьютера в сети или публичный URL" 
+                                       FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    
+                    <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel>
+                                    <TextBlock Text="🔄 Синхронизация" FontSize="18" FontWeight="SemiBold" 
+                                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="{Binding LastSyncText}" 
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                
+                                <Button Grid.Column="1" 
+                                        Style="{StaticResource PrimaryButton}"
+                                        Command="{Binding SyncCommand}"
+                                        IsEnabled="{Binding CanSync}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🔄" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Синхронизировать"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            
+                            <TextBlock Text="Данные для синхронизации:" 
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Margin="0,0,0,12"/>
+
+                            <Border Background="#F5F5F5" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Направление:" VerticalAlignment="Center"
+                                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,16,0"/>
+                                    <RadioButton Content="↑↓ Оба"
+                                                 IsChecked="{Binding SyncDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Both}"
+                                                 Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                    <RadioButton Content="↑ Только выгрузка"
+                                                 IsChecked="{Binding SyncDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Upload}"
+                                                 Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                    <RadioButton Content="↓ Только загрузка"
+                                                 IsChecked="{Binding SyncDirection, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Download}"
+                                                 VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <WrapPanel>
+                                <CheckBox Content="Дисциплины" 
+                                          IsChecked="{Binding SyncDisciplines}" 
+                                          Style="{StaticResource ModernCheckBox}"
+                                          Margin="0,0,24,8"/>
+                                <CheckBox Content="Темы" 
+                                          IsChecked="{Binding SyncTopics}" 
+                                          Style="{StaticResource ModernCheckBox}"
+                                          Margin="0,0,24,8"/>
+                                <CheckBox Content="Тесты" 
+                                          IsChecked="{Binding SyncTests}" 
+                                          Style="{StaticResource ModernCheckBox}"
+                                          Margin="0,0,24,8"/>
+                                <CheckBox Content="Вопросы и ответы" 
+                                          IsChecked="{Binding SyncQuestions}" 
+                                          Style="{StaticResource ModernCheckBox}"
+                                          Margin="0,0,24,8"/>
+                                <CheckBox Content="Результаты" 
+                                          IsChecked="{Binding SyncResults}" 
+                                          Style="{StaticResource ModernCheckBox}"
+                                          Margin="0,0,24,8"/>
+                                <CheckBox Content="Студенты" 
+                                          IsChecked="{Binding SyncStudents}" 
+                                          Style="{StaticResource ModernCheckBox}"
+                                          Margin="0,0,24,8"/>
+                            </WrapPanel>
+                            
+                            
+                            <Border Background="#F0F7FF" CornerRadius="8" Padding="12" Margin="0,12,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <CheckBox Content="Автосинхронизация" 
+                                              IsChecked="{Binding AutoSyncEnabled}" 
+                                              Style="{StaticResource ModernCheckBox}"
+                                              VerticalAlignment="Center"/>
+                                    
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="каждые " 
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBox Text="{Binding AutoSyncIntervalSeconds, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Width="50" 
+                                                 TextAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 IsEnabled="{Binding AutoSyncEnabled}"/>
+                                        <TextBlock Text=" сек." 
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            
+                            
+                            <StackPanel Visibility="{Binding IsSyncing, Converter={StaticResource BoolToVisibilityConverter}}"
+                                        Margin="0,16,0,0">
+                                <ProgressBar Value="{Binding SyncProgress}" 
+                                             Maximum="100" Height="8"
+                                             Foreground="{StaticResource PrimaryBrush}"/>
+                                <TextBlock Text="{Binding SyncStatusText}" 
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           Margin="0,8,0,0"/>
+                            </StackPanel>
+                            
+                            
+                            <Expander Header="Журнал синхронизации" Margin="0,12,0,0"
+                                      Visibility="{Binding SyncLog, Converter={StaticResource StringToVisibilityConverter}}">
+                                <TextBox Text="{Binding SyncLog, Mode=OneWay}" 
+                                         IsReadOnly="True" 
+                                         MaxHeight="150"
+                                         VerticalScrollBarVisibility="Auto"
+                                         Background="#F5F5F5"
+                                         BorderThickness="0"
+                                         Padding="12"
+                                         FontFamily="Consolas"
+                                         FontSize="12"/>
+                            </Expander>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        
+        <Border Grid.Row="2" Background="White" Padding="16,12" 
+                BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
+            <Grid>
+                <TextBlock Text="{Binding StatusMessage}" 
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center"/>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="👤 Регистрация преподавателя" 
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding ShowRegisterTeacherDialogCommand}"
+                            Padding="12,8"
+                            FontSize="12"
+                            Visibility="{Binding HasTeacherAccount, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                    <Button Content="🚪 Выйти" 
+                            Style="{StaticResource SecondaryButton}"
+                            Command="{Binding LogoutTeacherCommand}"
+                            Padding="12,8"
+                            FontSize="12"
+                            Margin="8,0,0,0"
+                            Visibility="{Binding HasTeacherAccount, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        
+        <Border Grid.RowSpan="3" 
+                Background="#80000000"
+                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="⏳" FontSize="48" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding StatusMessage}" 
+                           Foreground="White" 
+                           FontSize="16"
+                           Margin="0,16,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestSystem - Система тестирования</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        
+        <div id="loading-screen" class="loading-screen">
+            <div class="loader">
+                <div class="loader-spinner"></div>
+                <p>Загрузка...</p>
+            </div>
+        </div>
+
+        
+        <div id="login-page" class="page auth-page" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="logo">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>TestSystem</span>
+                        </div>
+                        <p class="auth-subtitle">Система тестирования</p>
+                    </div>
+
+                    <form id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="login-email" placeholder="Введите email" required maxlength="254">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="login-password">Пароль</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="login-password" placeholder="Введите пароль" required maxlength="128">
+                                <button type="button" class="toggle-password" tabindex="-1">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-error" id="login-error"></div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <span>Войти</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-divider">
+                        <span>или</span>
+                    </div>
+
+                    <button id="google-login-btn" class="btn btn-google btn-block">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        <span>Войти через Google</span>
+                    </button>
+
+                    <div class="auth-footer">
+                        <p>Нет аккаунта? <a href="#" id="show-register">Регистрация</a></p>
+                    </div>
+                </div>
+
+                <div class="auth-decoration">
+                    <div class="decoration-circle circle-1"></div>
+                    <div class="decoration-circle circle-2"></div>
+                    <div class="decoration-circle circle-3"></div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="register-page" class="page auth-page" style="display: none;">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="logo">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>TestSystem</span>
+                        </div>
+                        <p class="auth-subtitle">Создайте аккаунт</p>
+                    </div>
+
+                    <form id="register-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="register-name">Имя</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="register-name" placeholder="Введите полное имя" required maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="register-email" placeholder="Введите email" required maxlength="254">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="register-password">Пароль</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="register-password" placeholder="Минимум 6 символов" required minlength="6" maxlength="128">
+                                <button type="button" class="toggle-password" tabindex="-1">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-error" id="register-error"></div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <span>Зарегистрироваться</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="auth-divider">
+                        <span>или</span>
+                    </div>
+
+                    <button class="btn btn-google btn-block google-auth-btn" onclick="window.location.href='/auth/google'">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        <span>Регистрация через Google</span>
+                    </button>
+
+                    <div class="auth-footer">
+                        <p>Уже есть аккаунт? <a href="#" id="show-login">Войти</a></p>
+                    </div>
+                </div>
+
+                <div class="auth-decoration">
+                    <div class="decoration-circle circle-1"></div>
+                    <div class="decoration-circle circle-2"></div>
+                    <div class="decoration-circle circle-3"></div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="dashboard-page" class="page" style="display: none;">
+            
+            <div class="sidebar-overlay" id="sidebar-overlay" onclick="App.toggleMobileMenu()"></div>
+            
+            
+            <aside class="sidebar" id="sidebar">
+                <button class="sidebar-close" id="sidebar-close" onclick="App.toggleMobileMenu()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="sidebar-header">
+                    <div class="logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>TestSystem</span>
+                    </div>
+                    <button class="sidebar-toggle" id="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li>
+                            <a href="#" class="nav-link active" data-page="home" data-tooltip="Главная">
+                                <i class="fas fa-home"></i>
+                                <span>Главная</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link" data-page="disciplines" data-tooltip="Дисциплины">
+                                <i class="fas fa-book"></i>
+                                <span>Дисциплины</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link" data-page="tests" data-tooltip="Тесты">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Тесты</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link" data-page="results" data-tooltip="Результаты">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Результаты</span>
+                            </a>
+                        </li>
+                        
+                        <li class="teacher-only">
+                            <a href="#" class="nav-link" data-page="students" data-tooltip="Студенты">
+                                <i class="fas fa-users"></i>
+                                <span>Студенты</span>
+                            </a>
+                        </li>
+                        <li class="teacher-only">
+                            <a href="#" class="nav-link" data-page="review" data-tooltip="На проверку">
+                                <i class="fas fa-pen-to-square"></i>
+                                <span>На проверку</span>
+                                <span class="review-badge" id="review-badge" style="display:none;"></span>
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a href="#" class="nav-link" data-page="settings" data-tooltip="Настройки">
+                                <i class="fas fa-cog"></i>
+                                <span>Настройки</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="user-name">Пользователь</span>
+                            <span class="user-role" id="user-role">Роль</span>
+                        </div>
+                    </div>
+                    <button class="btn-logout" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </aside>
+
+            
+            <main class="main-content">
+                <header class="main-header">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="App.toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="header-title">
+                        <h1 id="page-title">Главная</h1>
+                    </div>
+                    <div class="header-actions">
+                        <div class="theme-toggle" id="theme-toggle" onclick="App.toggleTheme()">
+                            <i class="fas fa-sun sun-icon"></i>
+                            <i class="fas fa-moon moon-icon"></i>
+                        </div>
+                        <div class="mode-indicator" id="mode-indicator">
+                            <i class="fas fa-wifi"></i>
+                            <span>Offline</span>
+                        </div>
+                    </div>
+                </header>
+
+                
+                <div class="content-wrapper">
+                    
+                    <div id="home-content" class="content-section active">
+                        
+                        <div id="teacher-dashboard" class="teacher-only" style="display: none;">
+                            
+                            <div class="bento-dashboard">
+                                
+                                <div class="bento-hero">
+                                    <div class="bento-hero-content">
+                                        <div class="bento-greeting">
+                                            <span class="greeting-time" id="greeting-time">Добрый день</span>
+                                            <h1 id="greeting-name">Преподаватель</h1>
+                                        </div>
+                                        <p class="bento-hero-subtitle">Управляйте тестами и отслеживайте прогресс студентов</p>
+                                    </div>
+                                    <div class="bento-hero-visual">
+                                        <div class="hero-circles">
+                                            <div class="hero-circle c1"></div>
+                                            <div class="hero-circle c2"></div>
+                                            <div class="hero-circle c3"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <div class="bento-action" onclick="Teacher.addTest()">
+                                    <div class="bento-action-icon purple">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+                                    <span>Новый тест</span>
+                                </div>
+                                <div class="bento-action" onclick="Teacher.addDiscipline()">
+                                    <div class="bento-action-icon blue">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <span>Дисциплина</span>
+                                </div>
+
+                                
+                                <div class="bento-stat purple">
+                                    <div class="bento-stat-value" id="t-stat-tests">0</div>
+                                    <div class="bento-stat-label">Тестов</div>
+                                    <div class="bento-stat-icon"><i class="fas fa-clipboard-list"></i></div>
+                                </div>
+                                <div class="bento-stat blue" style="cursor:pointer" onclick="App.navigateTo('review')">
+                                    <div class="bento-stat-value" id="t-stat-pending">0</div>
+                                    <div class="bento-stat-label">На проверке</div>
+                                    <div class="bento-stat-icon"><i class="fas fa-clock"></i></div>
+                                </div>
+                                <div class="bento-stat green">
+                                    <div class="bento-stat-value" id="t-stat-students">0</div>
+                                    <div class="bento-stat-label">Студентов</div>
+                                    <div class="bento-stat-icon"><i class="fas fa-user-graduate"></i></div>
+                                </div>
+                                <div class="bento-stat orange">
+                                    <div class="bento-stat-value" id="t-stat-attempts">0</div>
+                                    <div class="bento-stat-label">Попыток</div>
+                                    <div class="bento-stat-icon"><i class="fas fa-chart-line"></i></div>
+                                </div>
+
+                                
+                                <div class="bento-card results-card">
+                                    <div class="bento-card-header">
+                                        <div class="bento-card-title">
+                                            <i class="fas fa-history"></i>
+                                            <span>Последние результаты</span>
+                                        </div>
+                                        <a href="#" onclick="App.navigateTo('results'); return false;" class="bento-link">Все</a>
+                                    </div>
+                                    <div class="bento-card-body" id="teacher-recent-results">
+                                        <div class="bento-empty">
+                                            <i class="fas fa-inbox"></i>
+                                            <span>Нет результатов</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <div class="bento-card tests-card">
+                                    <div class="bento-card-header">
+                                        <div class="bento-card-title">
+                                            <i class="fas fa-clipboard-list"></i>
+                                            <span>Мои тесты</span>
+                                        </div>
+                                        <a href="#" onclick="App.navigateTo('tests'); return false;" class="bento-link">Все</a>
+                                    </div>
+                                    <div class="bento-card-body" id="teacher-my-tests">
+                                        <div class="bento-empty">
+                                            <i class="fas fa-clipboard-list"></i>
+                                            <span>Нет тестов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div id="student-dashboard" class="student-only">
+                            
+                            <div class="welcome-card student-welcome">
+                                <div class="welcome-content">
+                                    <div class="welcome-icon">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="welcome-text">
+                                        <span class="welcome-greeting" id="student-greeting">Добрый день</span>
+                                        <h2 id="student-name">Студент</h2>
+                                    </div>
+                                </div>
+                                <div class="welcome-stats">
+                                    <div class="welcome-stat">
+                                        <span class="stat-value" id="stat-completed">0</span>
+                                        <span class="stat-label">пройдено</span>
+                                    </div>
+                                    <div class="welcome-stat">
+                                        <span class="stat-value" id="stat-tests">0</span>
+                                        <span class="stat-label">доступно</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="recent-section">
+                                <div class="section-header">
+                                    <h2><i class="fas fa-clipboard-list"></i> Доступные тесты</h2>
+                                </div>
+                                <div class="tests-grid" id="available-tests">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div id="disciplines-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Дисциплины</h2>
+                            <button class="btn btn-primary teacher-only" id="add-discipline-btn">
+                                <i class="fas fa-plus"></i>
+                                <span>Добавить</span>
+                            </button>
+                        </div>
+                        <div class="disciplines-grid" id="disciplines-list">
+                            
+                        </div>
+                    </div>
+
+                    
+                    <div id="tests-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Тесты</h2>
+                            <div class="filters">
+                                <select id="filter-discipline" class="filter-select">
+                                    <option value="">Все дисциплины</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary teacher-only" id="add-test-btn" onclick="Teacher.addTest()">
+                                <i class="fas fa-plus"></i>
+                                <span>Создать тест</span>
+                            </button>
+                        </div>
+                        <div class="tests-list" id="tests-list">
+                            
+                        </div>
+                    </div>
+
+                    
+                    <div id="results-content" class="content-section">
+                        <div class="content-header">
+                            <h2 id="results-title">Мои результаты</h2>
+                            <div class="header-actions-group teacher-only">
+                                <div class="filters">
+                                    <select id="filter-group-results" class="filter-select">
+                                        <option value="">Все группы</option>
+                                    </select>
+                                    <select id="filter-student" class="filter-select">
+                                        <option value="">Все студенты</option>
+                                    </select>
+                                    <select id="filter-test-results" class="filter-select">
+                                        <option value="">Все тесты</option>
+                                    </select>
+                                </div>
+                                <div class="results-actions">
+                                    <button class="btn btn-outline btn-sm" onclick="Dashboard.clearOldResults(90)" title="Удалить результаты старше 90 дней">
+                                        <i class="fas fa-calendar-minus"></i>
+                                        <span class="btn-text-desktop">Старые</span>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="Dashboard.clearAllResults()" title="Удалить все результаты">
+                                        <i class="fas fa-trash"></i>
+                                        <span class="btn-text-desktop">Очистить</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="results-table-wrapper">
+                            <table class="results-table">
+                                <thead>
+                                    <tr>
+                                        <th class="teacher-only">Студент</th>
+                                        <th>Тест</th>
+                                        <th>Дисциплина</th>
+                                        <th>Дата</th>
+                                        <th>Результат</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results-list">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="results-cards" id="results-cards">
+                            
+                        </div>
+                    </div>
+
+                    
+                    <div id="students-content" class="content-section teacher-only">
+                        <div class="content-header">
+                            <h2>Студенты</h2>
+                            <div class="filters">
+                                <select id="filter-group-students" class="filter-select">
+                                    <option value="">Все группы</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="add-student-btn">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Добавить</span>
+                            </button>
+                            <button class="btn btn-secondary" id="import-students-btn">
+                                <i class="fas fa-file-import"></i>
+                                <span>Импорт</span>
+                            </button>
+                            <button class="btn btn-secondary" id="manage-groups-btn">
+                                <i class="fas fa-users"></i>
+                                <span>Группы</span>
+                            </button>
+                        </div>
+                        <div class="students-list" id="students-list">
+                            <div class="empty-state">
+                                <div class="empty-state-icon"><i class="fas fa-users"></i></div>
+                                <h3>Выберите группу или загрузите студентов</h3>
+                                <p>Используйте фильтр по группе или нажмите кнопку ниже</p>
+                                <button class="btn btn-primary" id="load-all-students-btn" style="margin-top:12px;">
+                                    <i class="fas fa-download"></i> Загрузить всех
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div id="review-content" class="content-section teacher-only">
+                        <div class="content-header">
+                            <h2>На проверку <span class="review-badge" id="review-badge-header" style="display:none;"></span></h2>
+                        </div>
+                        <div class="review-list" id="review-list">
+                            <div class="empty-state">
+                                <div class="empty-state-icon"><i class="fas fa-check-circle"></i></div>
+                                <h3>Нет работ на проверку</h3>
+                                <p>Здесь появятся ответы студентов на вопросы с развёрнутым ответом</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div id="settings-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Настройки</h2>
+                        </div>
+                        <div class="settings-container">
+                            
+                            <div class="settings-card">
+                                <h3><i class="fas fa-user"></i> Профиль</h3>
+                                <div class="settings-row">
+                                    <label>Имя</label>
+                                    <div class="settings-value-editable">
+                                        <span id="settings-name">—</span>
+                                        <button class="btn btn-icon btn-sm" onclick="Dashboard.showChangeNameDialog()" title="Редактировать">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="settings-row">
+                                    <label>Email</label>
+                                    <span id="settings-email">—</span>
+                                </div>
+                                <div class="settings-row">
+                                    <label>Роль</label>
+                                    <span id="settings-role">—</span>
+                                </div>
+                            </div>
+
+                            
+                            <div class="settings-card" id="google-settings">
+                                <h3><i class="fab fa-google"></i> Google аккаунт</h3>
+                                <div class="settings-row" id="google-status">
+                                    
+                                </div>
+                            </div>
+
+
+                            
+                            <div class="settings-card">
+                                <h3><i class="fas fa-lock"></i> Безопасность</h3>
+                                <div class="settings-actions">
+                                    <button class="btn btn-outline" id="change-password-btn">
+                                        <i class="fas fa-key"></i>
+                                        Сменить пароль
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="settings-card settings-logout-card">
+                                <button class="btn btn-danger btn-logout-full" id="settings-logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Выйти из аккаунта
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            
+            <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+                <a href="#" class="bottom-nav-item active" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <a href="#" class="bottom-nav-item" data-page="tests">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Тесты</span>
+                </a>
+                <a href="#" class="bottom-nav-item" data-page="results">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Результаты</span>
+                </a>
+                <a href="#" class="bottom-nav-item teacher-only" data-page="students">
+                    <i class="fas fa-users"></i>
+                    <span>Студенты</span>
+                </a>
+                <a href="#" class="bottom-nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+        </div>
+
+        
+        <div id="test-page" class="page" style="display: none;">
+            <div class="test-container">
+                <div class="test-header">
+                    <div class="test-info">
+                        <h1 id="test-title">Название теста</h1>
+                        <div class="test-progress">
+                            <span id="question-counter">Вопрос 1 из 10</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-timer" id="test-timer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer-display">30:00</span>
+                    </div>
+                </div>
+
+                <div class="question-container" id="question-container">
+                    
+                </div>
+
+                <div class="test-navigation">
+                    <button class="btn btn-secondary" id="prev-question-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Назад</span>
+                    </button>
+                    <div class="question-dots" id="question-dots">
+                        
+                    </div>
+                    <button class="btn btn-primary" id="next-question-btn">
+                        <span>Далее</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-success" id="finish-test-btn" style="display: none;">
+                        <span>Завершить</span>
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Заголовок</h2>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/sync.js"></script>
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/test.js"></script>
+    <script src="/js/teacher.js"></script>
+</body>
+</html>
