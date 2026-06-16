@@ -7,23 +7,6 @@ npm install
 npm start
 ```
 
-
-## Переменные окружения (`.env`)
-
-| Переменная | Описание |
-|---|---|
-| `PORT` | Порт сервера (по умолчанию `5000`) |
-| `SESSION_SECRET` | Секрет для подписи сессий — **обязательно** сменить на продакшне |
-| `GOOGLE_CLIENT_ID` | Google OAuth Client ID (оставь пустым чтобы отключить Google-вход) |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret |
-| `GOOGLE_CALLBACK_URL` | Redirect URI, должен совпадать с настройкой в Google Cloud Console |
-| `DB_PATH` | Путь к файлу базы данных SQLite |
-| `APP_MODE` | `online` (Google OAuth включён) или `offline` (только email/пароль) |
-| `ADMIN_API_KEY` | API-ключ для WPF-приложения — **обязательно** сменить |
-| `ALLOWED_ORIGINS` | Доп. разрешённые CORS-домены через запятую (localhost всегда разрешён) |
-| `SYNC_URL` | URL удалённого сервера для синхронизации через WPF |
-| `SYNC_API_KEY` | API-ключ удалённого сервера (должен совпадать с его `ADMIN_API_KEY`) |
-
 ## Развёртывание в локальной сети
 
 1. Запустите сервер на главном компьютере:
